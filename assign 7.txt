@@ -1,0 +1,196 @@
+*Q1*/
+
+
+SELECT * FROM emplo
+select * from dept
+
+DECLARE
+   N emplo.name%TYPE;
+   S emplo.salary%TYPE;
+   e emplo.empid%type;
+BEGIN
+  e:=:e;
+  SELECT name, salary INTO N, S FROM emplo WHERE empid=e;
+  IF(S<1000) THEN
+   UPDATE emplo set commission=0.1*S WHERE empId=e;
+  ELSIF(S>=1000 AND S <1500) THEN
+  UPDATE emplo set commission=0.15*S WHERE empid=e;
+  ELSIF(S>1500) THEN
+  UPDATE emplo set commission=0.2*S WHERE empid=e;
+  ELSIF(S is null) THEN
+  UPDATE emplo set commission=0*S WHERE empid=e;
+  ELSE
+   dbms_output.put_line('ERROR');
+  END IF;
+COMMIT;
+END;
+
+
+/*Q2*/
+
+
+DECLARE
+   S emplo.salary%TYPE;
+   e emplo.empid%type;
+BEGIN
+  SELECT empid,salary INTO e, s FROM emplo WHERE salary=(SELECT MAX(salary) from emplo);
+  INSERT INTO empll values(e,s);
+END;
+
+CREATE TABLE empll(
+  empid number,
+  salary number);
+
+SELECT * FROM empll;
+
+/*Q3*/
+
+DECLARE
+  d emplo%ROWTYPE;
+  e emplo.EMPID%TYPE;
+BEGIN
+  e:=:e;
+  SELECT * INTO d FROM emplo WHERE empid=e;
+  dbms_output.put_line('EMPLOYEE ID :'||d.EMPID);
+  dbms_output.put_line('EMPLOYEE NAME :'||d.NAME);
+  dbms_output.put_line('EMPLOYEE SALARY :'||d.SALARY);
+  dbms_output.put_line('EMPLOYEE COMMISSION:'||d.COMMISSION);
+END;
+
+select * from emplo
+
+
+/*Q4*/
+
+DECLARE
+  d int;
+BEGIN
+  SELECT count(*) INTO d FROM emplo;
+  dbms_output.put_line('NO of row'||d);
+END;
+
+
+/*Q5*/
+
+DECLARE
+   N emplo.name%TYPE;
+   S emplo.salary%TYPE;
+   e emplo.empid%type;
+BEGIN
+  E:=:employeeID;
+  SELECT SALARY INTO S FROM emplo WHERE empid=E;
+  dbms_output.put_line('Salary not less than 4000'||S);
+  IF(S<4000) THEN
+  DELETE FROM emplo WHERE empid=E;
+  dbms_output.put_line('DELETED');
+  ELSE
+  dbms_output.put_line('Salary not less than 4000');
+  END IF;
+COMMIT;
+END;
+
+
+
+================================================================
+VIEW,INDEX.SEQUENCE,SYNONYMS
+============================
+/*Q1*/
+
+select * from employye
+
+CREATE OR REPLACE VIEW MinMaxSal AS SELECT MAX(salary)"max",MIN(salary)"min" FROM employye WHERE SALARY IS not null;
+
+
+
+/*Q2*/
+
+SELECT * from MinMaxSal
+
+/*Q3*/
+select * from emp
+select * from dept
+
+CREATE OR REPLACE VIEW empDEPT AS SELECT ename, deptno, (SELECT dname from dept WHERE deptNo=emp.deptno)"dname" FROM emp;
+
+SELECT * from empDEPT
+
+/*Q4*/
+
+CREATE OR REPLACE VIEW empMng (EMPLOYEE,MANAGER) AS SELECT empY.ename, mgrM.ename FROM emp empY ,emp mgrM WHERE empY.mgr=mgrM.empno ORDER BY mgrM.ename DESC;
+
+SELECT * FROM empMng
+
+
+/*Q5*/
+
+CREATE INDEX index_deptid ON emp(deptno);
+
+/*Q6*/
+
+SELECT * FROM user_indexes WHERE table_name = 'EMP' AND uniqueness='NONUNIQUE';
+
+/*Q7*/
+
+CREATE SEQUENCE seq_deptno 
+MINVALUE 1
+MAXVALUE 99
+START WITH 1
+INCREMENT BY 1
+CACHE;
+
+DROP TABLE supplier
+
+CREATE TABLE supplier(
+   supplier_id int,
+   supplier_name varchar(20));
+
+
+INSERT INTO tasks(id, title)
+VALUES(task_id_seq.NEXTVAL, 'Create Sequence in Oracle');
+
+SELECT 
+    seq_deptno.NEXTVAL 
+FROM 
+    dual
+CONNECT BY level <= 9;
+
+SELECT * FROM supplier;
+
+DROP SEQUENCE seq_deptno;
+
+/*Q8*/
+
+CREATE OR REPLACE VIEW emp_vu AS SELECT empno, ename AS employee, deptno FROM emp;
+
+SELECT * FROM emp_vu
+
+/*Q9*/
+
+SELECT view_name, text FROM user_views;
+
+/*Q10*/
+
+SELECT employee, deptno FROM emp_vu;
+
+/*Q11*/
+
+CREATE OR REPLACE VIEW Salary_vu AS SELECT ename AS employee, deptno AS department, sal AS SALARY FROM emp;
+
+/*Q12*/
+
+CREATE SEQUENCE deptid_seq
+MINVALUE 1
+MAXVALUE 200
+START WITH 60
+INCREMENT BY 10
+NOCACHE;
+
+INSERT INTO dept(deptno,dname,loc)
+VALUES(deptid_seq.NEXTVAL,'ENGINEER','TOKYO')
+
+select * from dept
+
+/*Q13*/
+
+SELECT * FROM user_sequences;
+SELECT sequence_name, max_value, increment_by, last_number FROM user_sequences;
